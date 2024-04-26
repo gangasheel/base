@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Decrypted Image Viewer</title>
+    </head>
+    <body>
+        <h2>Enter Base64 String</h2>
+        <form id="imageForm">
+            <textarea id="base64Input" rows="4" cols="50" placeholder="Enter Base64 string..."></textarea>
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+        <br>
+        <h2>Decrypted Image</h2>
+        <div id="decryptedImage"></div>
+
+        <script>
+            document.getElementById('imageForm').addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const base64String = document.getElementById('base64Input').value;
+
+                try {
+                    const response = await fetch('http://localhost:5808/decrypt', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ base64_string: base64String })
+                    });
+
+                    const data = await response.json();
+                    const decryptedImage = data.decrypted_image;
+                    console.log(decryptedImage);
+
+                    // Display the decrypted image
+                    document.getElementById('decryptedImage').innerHTML = `<img src="${decryptedImage}" alt="Decrypted Image">`;
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        </script>
+    </body>
+</html>
